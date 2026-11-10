@@ -2,175 +2,339 @@
 <html lang="th"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#2563eb">
+<meta name="theme-color" content="#10367a">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="liverV1">
+<meta name="apple-mobile-web-app-title" content="ศวช.ฉะเชิงเทรา">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="format-detection" content="telephone=no">
+<meta name="description" content="ระบบจำแนกระดับเม็ดไขมันในตับและบันทึกผลการตรวจวิเคราะห์ ประมวลผลในเบราว์เซอร์">
+<meta name="repo" content="https://github.com/Kittanasan/liver-fat-web">
+<title>ระบบจำแนกและบันทึกผลการตรวจวิเคราะห์ | ศูนย์วิจัยและพัฒนาการเพาะเลี้ยงสัตว์น้ำชายฝั่งฉะเชิงเทรา</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
-<title>จำแนกระดับไขมันในตับ</title>
 <style>
-:root{--bg:#f6f8fb;--card:#fff;--tx:#0f172a;--mut:#64748b;--bd:#e2e8f0;--ac:#2563eb;color-scheme:light dark}
-@media(prefers-color-scheme:dark){:root{--bg:#0b1220;--card:#131c2e;--tx:#e5e7eb;--mut:#94a3b8;--bd:#24304a;--ac:#3b82f6}}
+:root{
+  --bg:#f4f7fc;--card:#ffffff;--tx:#0f2440;--mut:#566b87;--bd:#d7e0ee;
+  --ac:#1a4fa0;--ac-d:#123a7a;--ac-soft:#e8effb;--hl:#10367a;
+  --danger:#b3261e;--danger-soft:#fdecea;--ok:#0f7a4f;--ok-soft:#e8f6ef;
+  --radius:10px;--radius-lg:14px;color-scheme:light dark;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0b1220;--card:#121c2e;--tx:#e5ecf7;--mut:#9db0c9;--bd:#26344b;
+  --ac:#5b9bff;--ac-d:#8ab8ff;--ac-soft:#17243a;--hl:#16233a;
+  --danger:#f0837a;--danger-soft:#3a1a18;--ok:#5cd39e;--ok-soft:#0e2e24;
+}}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 *{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans Thai","Leelawadee UI","Malgun Gothic","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--tx);overflow-wrap:break-word}
-input,button{-webkit-tap-highlight-color:transparent}
-main{max-width:760px;margin:0 auto;padding:20px 16px 48px}
-h1{font-size:1.4rem;margin:8px 0 4px}p.s{color:var(--mut);margin:0 0 18px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:14px}
-#drop{border:2px dashed var(--bd);border-radius:12px;padding:32px 12px;text-align:center;cursor:pointer;color:var(--mut)}
-#drop.on{border-color:var(--ac);color:var(--ac);background:rgba(59,130,246,.10)}
-#drop.hasimg{padding:10px;border-style:solid}
-button{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:12px 18px;font-size:1rem;cursor:pointer;width:100%;margin-top:12px}
-button.alt{background:transparent;color:var(--ac);border:1px solid var(--bd)}
-button:disabled{opacity:.5;cursor:default}
-canvas{max-width:100%;height:auto;border-radius:10px;display:block;margin:12px auto 0}
-.v{font-size:1.5rem;font-weight:700;margin:0}.bar{height:10px;background:var(--bd);border-radius:6px;overflow:hidden;margin:4px 0 10px}
-.bar i{display:block;height:100%}.row{display:flex;justify-content:space-between;font-size:.9rem}
-.err{color:#dc2626}.hide{display:none}
-.sec{font-size:1.05rem;font-weight:700;margin:0 0 12px}
-label{display:block;font-size:.9rem;color:var(--mut);margin:0 0 6px}
-input[type=text],input[type=date]{width:100%;padding:11px 12px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font-size:1rem;font-family:inherit;min-height:44px;-webkit-appearance:none;appearance:none}
+body{margin:0;font-family:system-ui,-apple-system,"Sarabun","Noto Sans Thai","Leelawadee UI","Segoe UI",Tahoma,sans-serif;
+  font-size:16px;line-height:1.6;background:var(--bg);color:var(--tx);overflow-wrap:break-word}
+input,button,select,textarea{-webkit-tap-highlight-color:transparent;font-family:inherit}
+h1,h2,h3{margin:0;line-height:1.35}
+a{color:var(--ac)}
+/* ---------- หัวเว็บราชการ ---------- */
+.hero{background:linear-gradient(135deg,#0a2a63 0%,#123f8a 58%,#1a4fa0 100%);color:#fff;
+  border-bottom:4px solid #dfe6f2;padding:18px 0 20px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+.brand{display:flex;gap:12px;align-items:center}
+.emblem{flex:0 0 auto;width:52px;height:52px;border-radius:14px;background:#0f2c66;
+  border:1px solid #7ba4e8;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.emblem svg{width:34px;height:34px;display:block}
+@media(max-width:520px){.emblem{width:46px;height:46px;border-radius:12px}.emblem svg{width:30px;height:30px}}
+.brand-txt{min-width:0}
+.dept{font-size:1rem;font-weight:700;letter-spacing:.1px}
+.divname{font-size:.8rem;color:rgba(255,255,255,.82);margin-top:2px}
+.sys{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.28);
+  display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline}
+.sys h1{font-size:1.22rem;font-weight:700}
+.sys span{font-size:.86rem;color:rgba(255,255,255,.88)}
+.hero nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.hero .btnlink{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.42);color:#fff;
+  display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:999px;font-size:.85rem;
+  cursor:pointer;text-decoration:none;margin:0;min-height:38px}
+.hero .btnlink:hover{background:rgba(255,255,255,.22)}
+.hero .btnlink:focus-visible{outline:2px solid #fff;outline-offset:2px}
+/* ---------- โครงหน้า ---------- */
+main{max-width:1120px;margin:0 auto;padding:18px 16px 40px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:var(--radius-lg);padding:16px;margin-bottom:14px}
+.card-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px;
+  border-bottom:1px solid var(--bd);padding-bottom:10px}
+.card-head h2{font-size:1.04rem;font-weight:700}
+.card-head .tag{font-size:.78rem;color:var(--mut)}
+.sec{font-size:1.02rem;font-weight:700;margin:0 0 4px}
+p.s{color:var(--mut);margin:6px 0 0;font-size:.9rem}
+p.note,.note{color:var(--mut);font-size:.82rem;margin:10px 0 0}
+.err{color:var(--danger);font-weight:600}
+.hide{display:none!important}
+/* ปุ่ม */
+button{background:var(--ac);color:#fff;border:1px solid var(--ac);border-radius:var(--radius);
+  padding:12px 18px;font-size:1rem;font-weight:600;cursor:pointer;width:100%;margin-top:10px;min-height:46px;
+  transition:background .15s,border-color .15s,color .15s}
+button:hover:not(:disabled){background:var(--ac-d);border-color:var(--ac-d)}
+button:focus-visible{outline:2px solid var(--hl);outline-offset:2px}
+button:disabled{opacity:.55;cursor:not-allowed}
+button.alt,button.ghost{background:var(--card);color:var(--ac);border:1px solid var(--bd)}
+button.alt:hover:not(:disabled),button.ghost:hover:not(:disabled){background:var(--ac-soft);border-color:var(--ac);color:var(--ac-d)}
+button.ghost{color:var(--danger);border-color:var(--bd)}
+button.ghost:hover:not(:disabled){background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
+/* ฟอร์ม */
+label{display:block;font-size:.88rem;font-weight:600;color:var(--tx);margin:0 0 6px}
+.req{color:var(--danger);font-weight:700}
+input[type=text],input[type=date],input[type=number],select{width:100%;padding:11px 12px;border:1px solid var(--bd);
+  border-radius:var(--radius);background:var(--card);color:var(--tx);font-size:1rem;min-height:46px;
+  -webkit-appearance:none;appearance:none}
+input::placeholder{color:var(--mut);opacity:.85}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--mut) 50%),linear-gradient(135deg,var(--mut) 50%,transparent 50%);
+  background-position:calc(100% - 18px) 20px,calc(100% - 13px) 20px;background-size:5px 5px,5px 5px;
+  background-repeat:no-repeat;padding-right:34px}
+input[type=number]{-moz-appearance:textfield}
 input[type=date]{display:block;line-height:1.4}
 input[type=date]::-webkit-date-and-time-value{text-align:left}
-input[type=text]:focus,input[type=date]:focus{outline:2px solid var(--ac);outline-offset:1px}
-.grid2{display:grid;gap:12px;grid-template-columns:1fr}
-@media(min-width:600px){.grid2{grid-template-columns:1fr 1fr}}
-.rowbtn{display:grid;grid-template-columns:1fr;gap:8px;margin-top:14px}
+input:focus,select:focus{outline:2px solid var(--ac);outline-offset:1px;border-color:var(--ac)}
+input[aria-invalid=true],select[aria-invalid=true]{border-color:var(--danger)}
+.grid2{display:grid;gap:14px 12px;grid-template-columns:1fr;margin-top:4px}
+@media(min-width:700px){.grid2{grid-template-columns:1fr 1fr}}
+@media(min-width:1000px){.grid2{grid-template-columns:repeat(3,1fr)}}
+.rowbtn{display:grid;grid-template-columns:1fr;gap:10px;margin-top:16px}
 @media(min-width:600px){.rowbtn{grid-template-columns:1fr 1fr}}
 .rowbtn button{margin-top:0}
-.ghost{background:transparent;color:var(--tx);border:1px solid var(--bd)}
-.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--bd);border-radius:10px}
-table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:620px}
-th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--bd);white-space:nowrap}
-th{background:var(--bg);color:var(--mut);font-weight:600;font-size:.82rem;position:sticky;top:0}
+/* ช่องรับภาพ */
+#drop{border:2px dashed var(--bd);border-radius:var(--radius);padding:30px 14px;text-align:center;
+  cursor:pointer;color:var(--mut);background:var(--ac-soft);font-size:.95rem}
+#drop:hover{border-color:var(--ac);color:var(--ac-d)}
+#drop.on{border-color:var(--ac);color:var(--ac-d);background:var(--ac-soft)}
+#drop.hasimg{padding:10px;border-style:solid;background:var(--card)}
+#prev{margin-top:12px}
+#prevBox{position:relative;background:var(--bg);border:1px solid var(--bd);border-radius:var(--radius);
+  padding:6px;display:flex;justify-content:center;align-items:center;min-height:120px}
+#prevImg{max-width:100%;max-height:42vh;height:auto;border-radius:6px;display:block;object-fit:contain}
+#prevTag{position:absolute;top:10px;left:10px;background:rgba(16,54,122,.92);color:#fff;font-size:.75rem;font-weight:600;padding:3px 9px;border-radius:999px}
+#changeImg{max-width:260px;margin:10px auto 0;display:block;padding:9px 16px;min-height:40px;font-size:.92rem}
+/* ผลวิเคราะห์ */
+canvas{max-width:100%;height:auto;border-radius:var(--radius);display:block;margin:12px auto 0}
+.v{font-size:1.35rem;font-weight:700;margin:0}
+.bar{height:10px;background:var(--bd);border-radius:6px;overflow:hidden;margin:4px 0 10px}
+.bar i{display:block;height:100%}
+.row{display:flex;justify-content:space-between;gap:10px;font-size:.88rem}
+/* ตาราง */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--bd);border-radius:var(--radius);margin-top:12px}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:720px}
+th,td{padding:10px;text-align:left;border-bottom:1px solid var(--bd);white-space:nowrap}
+thead th{background:var(--hl);color:#fff;font-weight:600;font-size:.82rem;position:sticky;top:0;z-index:1}
+thead th.num{text-align:right}
+thead th:last-child{text-align:center}
+tbody tr:nth-child(even){background:var(--bg)}
+tbody tr:hover{background:var(--ac-soft)}
 tbody tr:last-child td{border-bottom:0}
 td.num{text-align:right;font-variant-numeric:tabular-nums}
-.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.8rem;font-weight:600;color:#fff}
-.empty{padding:22px 12px;text-align:center;color:var(--mut);font-size:.92rem}
-.tbl-del{background:transparent;border:0;color:#dc2626;cursor:pointer;padding:6px 8px;font-size:1rem;width:auto;min-height:auto}
-.note{font-size:.82rem;color:var(--mut);margin:10px 0 0}
-#prev{margin-top:12px}
-#prevBox{position:relative;background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:6px;display:flex;justify-content:center;align-items:center;min-height:120px}
-#prevImg{max-width:100%;max-height:42vh;height:auto;border-radius:6px;display:block;object-fit:contain}
-#prevTag{position:absolute;top:10px;left:10px;background:rgba(17,24,39,.82);color:#fff;font-size:.75rem;font-weight:600;padding:3px 9px;border-radius:999px}
-#changeImg{margin-top:10px}
-a{color:var(--ac)}
-.topbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px;font-size:.88rem}
-.topbar a{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--bd);border-radius:999px;background:var(--card);text-decoration:none}
-.topbar a:hover{border-color:var(--ac)}
-.btnlink{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--bd);border-radius:999px;background:var(--card);text-decoration:none;color:var(--ac);font-size:.88rem;font-family:inherit;cursor:pointer;margin:0}
-.btnlink:hover{border-color:var(--ac)}
-.share{background:transparent;color:var(--ac);border:1px solid var(--bd);width:auto;margin-top:0;padding:10px 16px}
-.share:hover{border-color:var(--ac)}
-.inp{display:flex;gap:8px;margin-top:8px}
-.inp input{flex:1;min-width:0}
-.inp button{width:auto;margin-top:0;padding:11px 16px;white-space:nowrap}
-.list{list-style:none;padding:0;margin:8px 0 0;font-size:.9rem}
-.list li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}
+.badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.8rem;font-weight:700;border:1px solid transparent}
+.badge.b-lo{background:#e2eefc;color:#12386f;border-color:#a9c6ef}
+.badge.b-md{background:#fdf0d3;color:#6b4700;border-color:#eccf92}
+.badge.b-hi{background:#fbe0de;color:#7d1a15;border-color:#eeaaa4}
+.badge.b-na{background:var(--bg);color:var(--mut);border-color:var(--bd)}
+@media(prefers-color-scheme:dark){
+  .badge.b-lo{background:#16294a;color:#a8c8ff;border-color:#2f4f85}
+  .badge.b-md{background:#3a2c0c;color:#f0cd85;border-color:#6d5417}
+  .badge.b-hi{background:#3d1a17;color:#f4a9a2;border-color:#7a322c}
+}
+.empty{padding:24px 14px;text-align:center;color:var(--mut);font-size:.9rem}
+.tbl-del{background:transparent;border:1px solid var(--bd);color:var(--danger);cursor:pointer;
+  padding:6px 12px;font-size:.85rem;font-weight:600;width:auto;min-height:34px;margin:0;border-radius:8px}
+.tbl-del:hover:not(:disabled){background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
+/* สรุปตัวเลข */
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+@media(min-width:640px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.stat{border:1px solid var(--bd);border-radius:var(--radius);padding:10px 12px;background:var(--bg)}
+.stat b{display:block;font-size:1.3rem;line-height:1.3;font-variant-numeric:tabular-nums}
+.stat span{font-size:.8rem;color:var(--mut)}
+/* ข้อความแจ้ง */
+.inline-note{margin-top:12px;padding:10px 12px;border-radius:var(--radius);border:1px solid var(--ac);
+  background:var(--ac-soft);color:var(--ac-d);font-size:.88rem;font-weight:600}
+.inline-note.err{border-color:var(--danger);background:var(--danger-soft);color:var(--danger)}
+.inline-note.ok{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+/* แชร์ลิงก์ */
+.inp{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.inp input{flex:1 1 220px;min-width:0}
+.inp button{width:auto;flex:0 0 auto;margin-top:0;padding:11px 18px;white-space:nowrap}
+.list{list-style:none;padding:0;margin:10px 0 0;font-size:.9rem}
+.list li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--bd)}
 .list li:last-child{border-bottom:0}
-.shareOut{margin-top:10px}
-</style></head><body><main>
-<nav class="topbar">
-  <a id="siteLink" href="./">หน้าเว็บหลัก</a>
-  <a id="ghLink" href="#" target="_blank" rel="noopener">GitHub</a>
-  <button id="installBtn" class="btnlink hide" type="button">ติดตั้งเป็นแอป</button>
-</nav>
-<h1>จำแนกระดับเม็ดไขมันในตับ</h1>
-<p class="s">อัปโหลดภาพเนื้อตับ ระบบประเมินด้วยแบบจำลอง liverV1 <b>ในเบราว์เซอร์ของคุณเอง</b> ภาพไม่ถูกส่งไปที่ไหน</p>
+.list li span{color:var(--mut)}
+/* ท้ายเว็บ */
+footer{border-top:1px solid var(--bd);background:var(--card);padding:16px 0 28px;margin-top:8px}
+footer .wrap{font-size:.82rem;color:var(--mut);line-height:1.7}
+footer b{color:var(--tx);font-weight:700}
+</style></head><body>
+<header class="hero">
+  <div class="wrap">
+    <div class="brand">
+      <div class="emblem" role="img" aria-label="ตรากุ้ง ประจำศูนย์วิจัยและพัฒนาการเพาะเลี้ยงสัตว์น้ำชายฝั่งฉะเชิงเทรา" title="กุ้ง">
+        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <g fill="none" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- หนวด -->
+            <path d="M44 15c6-6 13-7 17-4"/>
+            <path d="M44 18c6 0 12 3 14 8"/>
+            <!-- เปลือก/ลำตัวกุ้งม้วนเป็นตัวซี -->
+            <path d="M45 13c-9-4-20-1-25 7-6 10-2 23 8 28 8 4 17 1 20-6 2-6-2-11-8-11-5 0-9 4-8 9"/>
+            <!-- ขาเล็ก -->
+            <path d="M26 24l-6-4"/>
+            <path d="M22 32l-7-1"/>
+            <path d="M23 40l-6 3"/>
+            <!-- หาง -->
+            <path d="M13 45l-6 7"/>
+            <path d="M16 49l-3 9"/>
+            <!-- ตา -->
+            <circle cx="42" cy="14" r="2.4" fill="#ffffff" stroke="none"/>
+          </g>
+        </svg>
+      </div>
+      <div class="brand-txt">
+        <div class="dept">ศูนย์วิจัยและพัฒนาการเพาะเลี้ยงสัตว์น้ำชายฝั่งฉะเชิงเทรา</div>
+        <div class="divname">Coastal Aquaculture Research and Development Center, Chachoengsao</div>
+      </div>
+    </div>
+    <div class="sys">
+      <h1>ระบบจำแนกและบันทึกผลการตรวจวิเคราะห์ระดับเม็ดไขมันในตับ</h1>
+      <span>แบบจำลอง liverV1 · ประมวลผลในเบราว์เซอร์ของเครื่องท่าน</span>
+    </div>
+    <nav class="topbar" aria-label="เมนู">
+      <a id="siteLink" href="./">หน้าเว็บหลัก</a>
+      <a id="ghLink" href="#" target="_blank" rel="noopener">แหล่งที่มา (GitHub)</a>
+      <button id="installBtn" class="btnlink hide" type="button">ติดตั้งเป็นแอป</button>
+    </nav>
+  </div>
+</header>
+<main>
 <div class="card">
-  <div id="drop">แตะหรือวางภาพที่นี่ (JPG / PNG)</div>
+  <div class="card-head"><h2>ขั้นตอนที่ 1 · นำเข้าภาพตัวอย่าง</h2><span class="tag">JPG / PNG / WEBP</span></div>
+  <p class="s">แตะหรือวางภาพเนื้อตับลงในกรอบด้านล่าง ระบบจะแสดงภาพตัวอย่างก่อนวิเคราะห์ ภาพไม่ถูกส่งออกจากเครื่องนี้</p>
+  <div id="drop" role="button" tabindex="0" aria-label="เลือกหรือวางภาพตัวอย่าง">แตะหรือวางภาพที่นี่ (JPG / PNG)</div>
   <input id="file" type="file" accept="image/*" class="hide">
   <div id="prev" class="hide">
     <div id="prevBox"><img id="prevImg" alt="ภาพตัวอย่างก่อนวิเคราะห์"><span id="prevTag" class="hide">ผลวิเคราะห์</span></div>
     <div id="prevInfo" class="note"></div>
     <button id="changeImg" class="alt" type="button">เปลี่ยนภาพ</button>
   </div>
-  <button id="go" disabled>จำแนกภาพ</button>
-  <button id="demo" class="alt">ลองใช้ภาพตัวอย่าง</button>
-  <p id="msg" class="s" style="margin-top:10px">กำลังโหลดแบบจำลอง…</p>
+  <div class="rowbtn">
+    <button id="go" disabled>จำแนกภาพ</button>
+    <button id="demo" class="alt" type="button">ใช้ภาพตัวอย่างจากระบบ</button>
+  </div>
+  <p id="msg" class="s">กำลังโหลดแบบจำลอง…</p>
   <div id="modelfile" class="hide">
     <button id="pickModel" class="alt" type="button">เลือกไฟล์ liverV1.onnx ในเครื่อง</button>
     <input id="mfile" type="file" accept=".onnx,application/octet-stream" class="hide">
     <p class="note">ใช้เมื่อเปิดแบบไฟล์ในเครื่อง (file://) หรือเซิร์ฟเวอร์ไม่พบไฟล์แบบจำลอง</p>
   </div>
-  <p class="s" style="margin-top:8px;font-size:.82rem">ผลการอ่านจะแสดงในตารางด้านล่างเมื่อกด "บันทึกข้อมูล"</p>
 </div>
 <div id="res" class="card hide">
-  <p class="v" id="verdict"></p><p class="s" id="advice"></p>
-  <div id="bars"></div>
-  <canvas id="cv"></canvas>
+  <div class="card-head"><h2>ผลการจำแนกภาพ</h2><span class="tag">ผลจากแบบจำลอง</span></div>
+  <p class="v" id="verdict" style="margin-top:10px"></p><p class="s" id="advice"></p>
+  <div id="bars" style="margin-top:12px"></div>
+  <canvas id="cv" aria-label="ภาพพร้อมกรอบผลการวิเคราะห์"></canvas>
 </div>
 <div class="card">
-  <p class="sec">บันทึกผลการอ่าน</p>
+  <div class="card-head"><h2>ขั้นตอนที่ 2 · บันทึกผลการตรวจวิเคราะห์</h2><span class="tag">ช่องที่มี <span class="req">*</span> ต้องกรอก</span></div>
+  <p class="s">กรอกข้อมูลให้ครบแล้วกด "บันทึกข้อมูล" รายการจะแสดงในตารางด้านล่างทันที และยังอยู่แม้ปิดหรือรีเฟรชหน้า</p>
   <div class="grid2">
     <div>
-      <label for="rcode">หมายเลขรหัสตัวอย่าง</label>
-      <input id="rcode" type="text" inputmode="text" placeholder="เช่น LV-0001" autocomplete="off">
+      <label for="rlabel">label ตัวอย่าง <span class="req">*</span></label>
+      <input id="rlabel" type="text" inputmode="text" placeholder="เช่น สไลด์ A1" autocomplete="off">
     </div>
     <div>
-      <label for="rdate">วันที่บันทึกตัวอย่าง</label>
+      <label for="rfarm">ฟาร์มที่มาตัวอย่าง <span class="req">*</span></label>
+      <input id="rfarm" type="text" inputmode="text" placeholder="เช่น ฟาร์มบางน้ำเปรี้ยว" autocomplete="off">
+    </div>
+    <div>
+      <label for="rresult">ค่าผลตรวจที่ได้ <span class="req">*</span></label>
+      <select id="rresult">
+        <option value="">— เลือกผลตรวจ —</option>
+        <option value="Hight">สูง (Hight)</option>
+        <option value="Medium">ปานกลาง (Medium)</option>
+        <option value="Low">ต่ำ (Low)</option>
+      </select>
+    </div>
+    <div>
+      <label for="rconf">เปอร์เซ็นต์ความเชื่อมั่น (%) <span class="req">*</span></label>
+      <input id="rconf" type="number" inputmode="decimal" min="0" max="100" step="0.1" placeholder="เช่น 60.7">
+    </div>
+    <div>
+      <label for="ranalyst">ชื่อผู้ตรวจวิเคราะห์ <span class="req">*</span></label>
+      <input id="ranalyst" type="text" inputmode="text" placeholder="เช่น นายสมชาย ก." autocomplete="off">
+    </div>
+    <div>
+      <label for="rdate">วันที่บันทึกตัวอย่าง <span class="req">*</span></label>
       <input id="rdate" type="date">
     </div>
   </div>
   <div class="rowbtn">
-    <button id="save">บันทึกข้อมูล</button>
-    <button id="clear" class="ghost">ล้างรายการทั้งหมด</button>
+    <button id="save" type="button">บันทึกข้อมูล</button>
+    <button id="fillBtn" class="alt" type="button">ใช้ค่าจากผลวิเคราะห์ล่าสุด</button>
   </div>
-  <p id="saveMsg" class="s" style="margin-top:10px">&nbsp;</p>
+  <div id="saveMsg" class="inline-note hide" role="status" aria-live="polite"></div>
 </div>
 <div class="card">
-  <p class="sec">แชร์ลิงก์ผลการอ่าน</p>
-  <p class="s" style="margin:0">สร้างลิงก์ที่ฝังผลการอ่านไว้ในตัว URL เพื่อส่งต่อหรือเปิดในเครื่องอื่นได้ ไม่ต้องมีเซิร์ฟเวอร์</p>
-  <div class="rowbtn">
-    <button id="shareLast" class="share">คัดลอกลิงก์ผลล่าสุด</button>
-    <button id="shareAll" class="share">คัดลอกลิงก์ทั้งตาราง</button>
-  </div>
-  <div class="shareOut">
-    <label for="linkOut">ลิงก์ที่สร้างได้</label>
-    <div class="inp">
-      <input id="linkOut" type="text" readonly placeholder="ยังไม่มีลิงก์ — กดปุ่มด้านบน">
-      <button id="openLink" class="share" disabled>เปิด</button>
-    </div>
-    <p id="shareMsg" class="s" style="margin-top:8px">&nbsp;</p>
-  </div>
-</div>
-<div class="card">
-  <p class="sec">ผลการอ่านที่บันทึกไว้</p>
+  <div class="card-head"><h2>ขั้นตอนที่ 3 · ผลการอ่านที่บันทึกไว้</h2><span class="tag">บันทึกในเครื่องนี้</span></div>
+  <div class="stats" id="stats"></div>
   <div class="tw">
     <table>
+      <caption class="hide">ตารางผลการตรวจวิเคราะห์ที่บันทึกไว้</caption>
       <thead>
         <tr>
-          <th class="num">ลำดับ</th>
-          <th>หมายเลขรหัสตัวอย่าง</th>
-          <th>วันที่บันทึกตัวอย่าง</th>
-          <th class="num">ผลการจำแนก</th>
+          <th class="num">ลำดับที่</th>
+          <th>label ตัวอย่าง</th>
+          <th>ฟาร์มที่มาตัวอย่าง</th>
+          <th class="num">ค่าผลตรวจที่ได้</th>
           <th class="num">ความเชื่อมั่น</th>
-          <th></th>
+          <th>ชื่อผู้ตรวจวิเคราะห์</th>
+          <th>วันที่บันทึก</th>
+          <th>จัดการ</th>
         </tr>
       </thead>
       <tbody id="tbody"></tbody>
     </table>
-    <div id="tempty" class="empty">ยังไม่มีข้อมูล — จำแนกภาพแล้วกด "บันทึกข้อมูล"</div>
+    <div id="tempty" class="empty">ยังไม่มีข้อมูล — กรอกข้อมูลในขั้นตอนที่ 2 แล้วกด "บันทึกข้อมูล" รายการจะแสดงที่นี่</div>
+  </div>
+  <p id="sum" class="note"></p>
+  <div class="rowbtn">
+    <button id="clear" class="ghost" type="button">ล้างรายการทั้งหมด</button>
+  </div>
+</div>
+<div class="card">
+  <div class="card-head"><h2>ส่งต่อผลการอ่าน</h2><span class="tag">ไม่ต้องมีเซิร์ฟเวอร์</span></div>
+  <p class="s">สร้างลิงก์ที่ฝังผลการอ่านไว้ในตัว URL เพื่อส่งต่อให้ผู้ตรวจสอบหรือเปิดในเครื่องอื่น</p>
+  <div class="rowbtn">
+    <button id="shareLast" class="alt" type="button">คัดลอกลิงก์ผลล่าสุด</button>
+    <button id="shareAll" class="alt" type="button">คัดลอกลิงก์ทั้งตาราง</button>
+  </div>
+  <div style="margin-top:14px">
+    <label for="linkOut">ลิงก์ที่สร้างได้</label>
+    <div class="inp">
+      <input id="linkOut" type="text" readonly placeholder="ยังไม่มีลิงก์ — กดปุ่มด้านบน">
+      <button id="openLink" class="alt" type="button" disabled>เปิด</button>
+    </div>
+    <div id="shareMsg" class="inline-note hide" role="status" aria-live="polite"></div>
   </div>
 </div>
 <div id="viewCard" class="card hide">
-  <p class="sec">ผลการอ่านจากลิงก์ที่แชร์</p>
+  <div class="card-head"><h2>ผลการอ่านจากลิงก์ที่แชร์</h2><span class="tag">อ่านอย่างเดียว</span></div>
   <div id="viewHead"></div>
   <div id="viewBody"></div>
-  <button id="saveToTable" class="share">บันทึกลงตารางของเครื่องนี้</button>
-  <p id="viewMsg" class="s" style="margin-top:8px">&nbsp;</p>
+  <button id="saveToTable" type="button">บันทึกลงตารางของเครื่องนี้</button>
+  <div id="viewMsg" class="inline-note hide" role="status" aria-live="polite"></div>
 </div>
-<p class="note">ข้อมูลบันทึกอยู่ในเบราว์เซอร์เครื่องนี้ (localStorage) ไม่ได้ถูกส่งไปที่ใด ใช้เป็นบันทึกตัวอย่างเบื้องต้นเท่านั้น</p>
+<p class="note">ข้อมูลทั้งหมดถูกเก็บในเบราว์เซอร์ของเครื่องนี้ (localStorage) ไม่ได้ถูกส่งไปที่ใด — ใช้เป็นบันทึกผลการตรวจวิเคราะห์เบื้องต้น</p>
 </main>
+<footer>
+  <div class="wrap">
+    <b>ศูนย์วิจัยและพัฒนาการเพาะเลี้ยงสัตว์น้ำชายฝั่งฉะเชิงเทรา</b><br>
+    ระบบจำแนกและบันทึกผลการตรวจวิเคราะห์ระดับเม็ดไขมันในตับ (แบบจำลอง liverV1) · ผลการอ่านเป็นการประเมินเบื้องต้น ควรยืนยันโดยผู้เชี่ยวชาญก่อนใช้ประกอบการตัดสินใจ
+  </div>
+</footer>
 <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.18.0/dist/ort.min.js"></script>
 <script>
 const $=id=>document.getElementById(id);
-const NAMES=["Hight","Low","Medium"];                 // ลำดับคลาสของ liverV1.pt
-const COL={Hight:"#ef4444",Medium:"#f59e0b",Low:"#22c55e"},TH={Hight:"สูง",Medium:"ปานกลาง",Low:"ต่ำ"};
+const NAMES=["Hight","Low","Medium"];                 // ลำดับคลาสของ liverV1.pt (ห้ามแก้ตัวสะกด Hight)
+const COL={Hight:"#c0392b",Medium:"#b3801a",Low:"#1f8a54"},TH={Hight:"สูง",Medium:"ปานกลาง",Low:"ต่ำ"};
 const ADV={Hight:"ตรวจพบเม็ดไขมันมาก",Medium:"ตรวจพบเม็ดไขมันปานกลาง",Low:"ตรวจพบเม็ดไขมันน้อย"};
 const SZ=640,CONF=0.25,IOU=0.7;
 let session=null,img=null,lastResult=null,canUseLocalFile=false;
@@ -223,7 +387,7 @@ function bindModelFile(){
     const rd=new FileReader();
     rd.onload=async()=>{
       $("msg").className="s";$("msg").textContent="กำลังโหลดแบบจำลองจากไฟล์…";
-      try{session=await ort.InferenceSession.create(new Uint8Array(rd.result),{executionProviders:[location.protocol==="file:"?"wasm":"wasm"]});f.classList.add("hide");
+      try{session=await ort.InferenceSession.create(new Uint8Array(rd.result),{executionProviders:["wasm"]});f.classList.add("hide");
         $("msg").textContent="พร้อมใช้งาน — เลือกภาพได้เลย";$("go").disabled=!img;if(img&&location.hash==="#auto")run();
       }catch(err){$("msg").className="s err";$("msg").textContent="โหลดไฟล์แบบจำลองไม่สำเร็จ: "+errMsg(err)}
     };
@@ -232,11 +396,12 @@ function bindModelFile(){
   };
 }
 bindModelFile();
+const DROP_TXT="แตะหรือวางภาพที่นี่ (JPG / PNG)";
 function fmtSize(b){
   if(!b&&b!==0)return"";
   return b<1024*1024?Math.max(1,Math.round(b/1024))+" KB":(b/1048576).toFixed(1)+" MB";
 }
-// แสดงภาพตัวอย่างในช่องรับภาพทันทีที่เลือก/วางภาพ (ก่อนกดจำแนก) — ใช้เบราว์เซอร์ย่อขนาดเอง ไม่กินหน่วยความจำ
+// แสดงภาพตัวอย่างในช่องรับภาพทันทีที่เลือก/วางภาพ (ก่อนกดจำแนก)
 function showPreview(src,info){
   const p=$("prev"),im=$("prevImg");
   if(!p||!im){if(info)$("msg").textContent=info;return}
@@ -253,7 +418,7 @@ function showPreview(src,info){
   im.onerror=()=>{
     img=null;$("prev").classList.add("hide");
     $("drop").classList.remove("hasimg");
-    $("drop").textContent="แตะหรือวางภาพที่นี่ (JPG / PNG)";
+    $("drop").textContent=DROP_TXT;
     $("go").disabled=true;
     $("msg").className="s err";$("msg").textContent="เปิดภาพนี้ไม่ได้ — รองรับ JPG / PNG / WEBP กรุณาเลือกไฟล์ภาพอื่น";
   };
@@ -263,12 +428,12 @@ function resetPreview(){
   const p=$("prev");
   if(p){p.classList.add("hide");const im=$("prevImg");if(im)im.removeAttribute("src")}
   $("drop").classList.remove("hasimg");
-  $("drop").textContent="แตะหรือวางภาพที่นี่ (JPG / PNG)";
+  $("drop").textContent=DROP_TXT;
   $("msg").className="s";
 }
 function setImg(src,info){
-  lastResult=null;$("res").classList.add("hide");document.title="จำแนกระดับไขมันในตับ";
-  if(!$("rdate").value)$("rdate").value=new Date().toISOString().slice(0,10);
+  lastResult=null;$("res").classList.add("hide");document.title=DOC_TITLE;
+  if(!$("rdate").value)$("rdate").value=today();
   showPreview(src,info);
   const i=new Image();i.onload=()=>{img=i;$("go").disabled=!session;
     if(location.hash==="#auto"&&session)run()};
@@ -284,7 +449,9 @@ function pickFile(x){
   resetPreview();img=null;$("go").disabled=true;
   setImg(URL.createObjectURL(x),info);
 }
-$("drop").onclick=()=>$("file").click();$("file").onchange=e=>pickFile(e.target.files[0]);
+$("drop").onclick=()=>$("file").click();
+$("drop").onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("file").click()}};
+$("file").onchange=e=>pickFile(e.target.files[0]);
 $("changeImg").onclick=e=>{e.stopPropagation();$("file").click()};
 $("drop").ondragover=e=>{e.preventDefault();$("drop").classList.add("on")};
 $("drop").ondragleave=()=>$("drop").classList.remove("on");
@@ -360,7 +527,7 @@ function show(dets,w,h){
   const lw=Math.max(2,Math.min(w,h)/200),fs=Math.max(14,Math.min(w,h)/35);g.font=`bold ${fs}px sans-serif`;g.lineWidth=lw;
   dets.forEach(d=>{const k=NAMES[d.cls],[x1,y1,x2,y2]=d.box;g.strokeStyle=COL[k];g.fillStyle=COL[k];g.strokeRect(x1,y1,x2-x1,y2-y1);
     const t=`${k} ${Math.round(d.conf*100)}%`,tw=g.measureText(t).width+8,ty=Math.max(0,y1-fs-4);
-    g.fillRect(x1,ty,tw,fs+4);g.fillStyle="#0b1220";g.fillText(t,x1+4,ty+fs-1)});
+    g.fillRect(x1,ty,tw,fs+4);g.fillStyle="#ffffff";g.fillText(t,x1+4,ty+fs-1)});
   if(dets.length){const k=NAMES[dets[0].cls];
     $("verdict").textContent=`${TH[k]} (${(dets[0].conf*100).toFixed(1)}%)`;$("verdict").style.color=COL[k];$("advice").textContent=ADV[k];
   }else{$("verdict").textContent="ไม่พบเม็ดไขมันที่ชัดเจน";$("verdict").style.color="inherit";$("advice").textContent="ลองใช้ภาพที่ชัดและได้สัดส่วนกว่านี้"}
@@ -368,43 +535,137 @@ function show(dets,w,h){
     return `<div class="row"><span>${TH[k]} · พบ ${cn[k]} จุด</span><span>${p}%</span></div><div class="bar"><i style="width:${p}%;background:${COL[k]}"></i></div>`}).join("");
   $("res").classList.remove("hide");$("msg").textContent="เสร็จแล้ว";
   lastResult=dets.length?{cls:NAMES[dets[0].cls],conf:dets[0].conf}:null;
+  if(lastResult)fillFromResult(true);
   document.title="RESULT "+JSON.stringify({n:dets.length,cn,top:dets[0]&&[NAMES[dets[0].cls],+dets[0].conf.toFixed(3)]});
 }
 /* ---- บันทึกผลการอ่าน ---- */
 const LSKEY="liverV1_records";
-function loadRecs(){try{return JSON.parse(lsGet(LSKEY))||[]}catch(e){return[]}}
+const DOC_TITLE=document.title;
+function loadRecs(){
+  let r=null;
+  try{r=JSON.parse(lsGet(LSKEY))||[]}catch(e){r=[]}
+  if(!Array.isArray(r))r=[];
+  // แปลงข้อมูลรุ่นเก่า (code/วันที่ + conf 0-1) ให้เป็นรูปแบบใหม่ (label/ฟาร์ม/ผู้ตรวจ + conf เป็น %)
+  return r.map(x=>({
+    label:x.label||x.code||"",
+    farm:x.farm||"",
+    cls:x.cls||"",
+    conf:x.conf===null||x.conf===undefined||x.conf===""?"":(x.conf>0&&x.conf<=1&&!x.v2?+(x.conf*100).toFixed(1):Number(x.conf)),
+    analyst:x.analyst||"",
+    date:x.date||"",
+    ts:x.ts||0,
+    v2:true
+  }));
+}
 function saveRecs(r){return lsSet(LSKEY,JSON.stringify(r))}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function fmtD(d){if(!d)return"—";const p=d.split("-");return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:d}
+function fmtD(d){if(!d)return"—";const p=String(d).split("-");return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:d}
+function today(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function badgeCls(k){return k==="Hight"?"b-hi":k==="Medium"?"b-md":k==="Low"?"b-lo":"b-na"}
+function badge(k){return `<span class="badge ${badgeCls(k)}">${esc(TH[k]||k||"—")}</span>`}
+function pct(v){return v===null||v===undefined||v===""||isNaN(v)?"—":Number(v).toFixed(1)+"%"}
+// กล่องข้อความแจ้งใต้ฟอร์ม/ในตาราง (ใช้ซ้ำได้ทั้งข้อความปกติ / ok / err)
+function flash(el,msg,type){
+  if(!el)return;
+  el.className="inline-note"+(type?" "+type:"");
+  el.textContent=msg;
+  el.classList.toggle("hide",!msg);
+}
+function clearFlash(el){if(el){el.textContent="";el.className="inline-note hide"}}
 function renderRecs(){
   const r=loadRecs(),tb=$("tbody");
-  $("rdate").max=new Date().toISOString().slice(0,10);
-  if(!$("rdate").value)$("rdate").value=new Date().toISOString().slice(0,10);
+  $("rdate").max=today();
+  if(!$("rdate").value)$("rdate").value=today();
+  // เติมค่าเริ่มต้นจากผลการอ่านล่าสุด เพื่อไม่ต้องพิมพ์ซ้ำ
+  if(lastResult){
+    if(!$("rresult").value)$("rresult").value=lastResult.cls;
+    if(!$("rconf").value)$("rconf").value=(lastResult.conf*100).toFixed(1);
+  }
   tb.innerHTML=r.map((x,i)=>
     `<tr>
       <td class="num">${i+1}</td>
-      <td>${esc(x.code)}</td>
+      <td>${esc(x.label||"—")}</td>
+      <td>${esc(x.farm||"—")}</td>
+      <td class="num">${badge(x.cls)}</td>
+      <td class="num">${pct(x.conf)}</td>
+      <td>${esc(x.analyst||"—")}</td>
       <td>${esc(fmtD(x.date))}</td>
-      <td class="num"><span class="badge" style="background:${esc(COL[x.cls]||"#64748b")}">${esc(TH[x.cls]||x.cls)}</span></td>
-      <td class="num">${(x.conf*100).toFixed(1)}%</td>
-      <td><button class="tbl-del" data-i="${i}" title="ลบรายการนี้">&times;</button></td>
+      <td><button class="tbl-del" data-i="${i}" type="button" title="ลบรายการนี้" aria-label="ลบรายการที่ ${i+1} (${esc(x.label||"ไม่ระบุ label")})">ลบ</button></td>
     </tr>`).join("");
   $("tempty").style.display=r.length?"none":"block";
-  tb.querySelectorAll(".tbl-del").forEach(b=>b.onclick=()=>{const r2=loadRecs();r2.splice(+b.dataset.i,1);saveRecs(r2);renderRecs()});
+  const cnt={Hight:0,Medium:0,Low:0};r.forEach(x=>{if(cnt[x.cls]!==undefined)cnt[x.cls]++});
+  const avg=r.length?r.reduce((s,x)=>s+(Number(x.conf)||0),0)/r.length:0;
+  // สรุปตัวเลขสำคัญเหนือตาราง
+  const st=$("stats");
+  if(st){
+    st.innerHTML=r.length?[
+      ["รายการทั้งหมด",String(r.length)],
+      ["ผลสูง (Hight)",String(cnt.Hight)],
+      ["ผลปานกลาง (Medium)",String(cnt.Medium)],
+      ["ผลต่ำ (Low)",String(cnt.Low)]
+    ].map(([k,v])=>`<div class="stat"><b>${v}</b><span>${k}</span></div>`).join("")
+     +(r.length?`<div class="stat" style="grid-column:1/-1"><b>${avg.toFixed(1)}%</b><span>ความเชื่อมั่นเฉลี่ยของทุกรายการ</span></div>`:"")
+     :"";
+    st.style.display=r.length?"grid":"none";
+  }
+  $("sum").textContent=r.length?`ความเชื่อมั่นเฉลี่ย ${avg.toFixed(1)}% · ข้อมูลเก็บในเบราว์เซอร์เครื่องนี้`:"";
+  $("clear").disabled=!r.length;
+  tb.querySelectorAll(".tbl-del").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i,rec=loadRecs()[i];if(!rec)return;
+    const label=rec.label||("รายการที่ "+(i+1));
+    if(!confirm(`ลบรายการ "${label}" ออกจากตาราง?`))return;
+    const r2=loadRecs();r2.splice(i,1);const stored=saveRecs(r2);renderRecs();
+    flash($("saveMsg"),"ลบแล้ว: "+label+(stored?"":" (ที่เก็บข้อมูลถาวรถูกปิด — รายการจะกลับมาเมื่อโหลดหน้าใหม่)"),stored?"ok":"err");
+  });
 }
-$("rcode").oninput=()=>{if($("saveMsg").className==="s err"){$("saveMsg").className="s";$("saveMsg").textContent="\u00a0"}};
+function recErr(msg,focus){
+  flash($("saveMsg"),msg,"err");
+  ["rlabel","rfarm","rresult","rconf","ranalyst","rdate"].forEach(id=>{if($(id))$(id).setAttribute("aria-invalid",id===focus?"true":"false")});
+  if(focus&&$(focus))$(focus).focus();
+}
+// เติมค่าผลตรวจจากผลวิเคราะห์ล่าสุด (ผู้ใช้แก้ไขเองได้ก่อนบันทึก)
+function fillFromResult(silent){
+  if(!lastResult)return false;
+  $("rresult").value=lastResult.cls;
+  $("rconf").value=(lastResult.conf*100).toFixed(1);
+  if(!silent){$("msg").className="s";$("msg").textContent="เติมค่าผลตรวจให้แล้ว — ตรวจแก้ได้ก่อนกดบันทึกข้อมูล"}
+  return true;
+}
+["rlabel","rfarm","ranalyst"].forEach(id=>{
+  $(id).oninput=()=>{$("saveMsg").classList.contains("err")&&clearFlash($("saveMsg"));$(id).removeAttribute("aria-invalid")};
+});
+["rresult","rconf","rdate"].forEach(id=>{
+  $(id).onchange=()=>{$(id).removeAttribute("aria-invalid")};
+});
 $("save").onclick=()=>{
-  if(!lastResult){$("saveMsg").className="s err";$("saveMsg").textContent="ยังไม่มีผลการอ่าน — กด \"จำแนกภาพ\" ก่อน";return}
-  const code=$("rcode").value.trim(),date=$("rdate").value;
-  if(!code){$("saveMsg").className="s err";$("saveMsg").textContent="กรุณากรอกหมายเลขรหัสตัวอย่าง";$("rcode").focus();return}
-  if(!date){$("saveMsg").className="s err";$("saveMsg").textContent="กรุณาเลือกวันที่บันทึกตัวอย่าง";$("rdate").focus();return}
-  const r=loadRecs();r.push({code,date,cls:lastResult.cls,conf:lastResult.conf});
-  const stored=saveRecs(r);renderRecs();$("rcode").value="";
-  $("saveMsg").className="s";$("saveMsg").textContent=(stored?"บันทึกแล้ว: ":"บันทึกชั่วคราวแล้ว (เบราว์เซอร์นี้ปิดที่เก็บข้อมูลถาวร จะหายเมื่อปิดแท็บ): ")+`${code} · ${fmtD(date)} · ${TH[lastResult.cls]} ${(lastResult.conf*100).toFixed(1)}%`;
+  const label=$("rlabel").value.trim(),farm=$("rfarm").value.trim(),analyst=$("ranalyst").value.trim();
+  const cls=$("rresult").value,confRaw=$("rconf").value.trim(),date=$("rdate").value;
+  if(!label)return recErr("กรุณากรอก label ตัวอย่าง","rlabel");
+  if(!farm)return recErr("กรุณากรอกฟาร์มที่มาตัวอย่าง","rfarm");
+  if(!cls)return recErr("กรุณาเลือกค่าผลตรวจที่ได้","rresult");
+  if(confRaw==="")return recErr("กรุณากรอกเปอร์เซ็นต์ความเชื่อมั่น","rconf");
+  const conf=Number(confRaw);
+  if(isNaN(conf)||conf<0||conf>100)return recErr("เปอร์เซ็นต์ความเชื่อมั่นต้องอยู่ระหว่าง 0 ถึง 100","rconf");
+  if(!analyst)return recErr("กรุณากรอกชื่อผู้ตรวจวิเคราะห์","ranalyst");
+  if(!date)return recErr("กรุณาเลือกวันที่บันทึกตัวอย่าง","rdate");
+  ["rlabel","rfarm","rresult","rconf","ranalyst","rdate"].forEach(id=>$(id).removeAttribute("aria-invalid"));
+  const rec={label,farm,cls,conf:+conf.toFixed(1),analyst,date,ts:Date.now()};
+  const stored=saveRecs(loadRecs().concat([rec]));
+  renderRecs();
+  ["rlabel","rfarm"].forEach(id=>$(id).value="");
+  flash($("saveMsg"),(stored?"บันทึกแล้ว: ":"บันทึกชั่วคราวแล้ว (เบราว์เซอร์นี้ปิดที่เก็บข้อมูลถาวร จะหายเมื่อปิดแท็บ): ")
+    +`${label} · ${farm} · ${TH[cls]} ${conf.toFixed(1)}% · ${analyst} · ${fmtD(date)}`,stored?"ok":"err");
+  try{$("rlabel").focus()}catch(e){}
+};
+$("fillBtn").onclick=()=>{
+  if(!fillFromResult(false)){
+    $("msg").className="s err";$("msg").textContent="ยังไม่มีผลวิเคราะห์ — กด \"จำแนกภาพ\" ก่อน (หรือกรอกค่าผลตรวจเองในช่องด้านบน)";return;
+  }
+  try{$("rlabel").focus();$("rlabel").scrollIntoView({behavior:"smooth",block:"center"})}catch(e){}
 };
 $("clear").onclick=()=>{
-  if(!loadRecs().length){$("saveMsg").className="s";$("saveMsg").textContent="ไม่มีข้อมูลให้ล้าง";return}
-  if(confirm("ล้างรายการผลการอ่านทั้งหมด?")){saveRecs([]);renderRecs();$("saveMsg").className="s";$("saveMsg").textContent="ล้างรายการทั้งหมดแล้ว"}
+  if(!loadRecs().length){flash($("saveMsg"),"ไม่มีข้อมูลให้ล้าง");return}
+  if(confirm("ล้างรายการผลการอ่านทั้งหมด?")){saveRecs([]);renderRecs();flash($("saveMsg"),"ล้างรายการทั้งหมดแล้ว","ok")}
 };
 renderRecs();
 /* ---- ลิงก์: สร้าง/อ่านผลการอ่านจาก URL ---- */
@@ -420,29 +681,36 @@ function siteLink(){
   a.href=baseUrl();
   a.textContent="หน้าเว็บหลัก";
   const gh=document.querySelector('meta[name="repo"]');
-  if(gh&&gh.content){$("ghLink").href=gh.content}
-  else{$("ghLink").style.display="none"}
+  if(gh&&gh.content&&$("ghLink")){$("ghLink").href=gh.content}
+  else if($("ghLink")){$("ghLink").style.display="none"}
 }
 function setLink(url,msg){
   $("linkOut").value=url;$("openLink").disabled=!url;
-  $("shareMsg").className="s";$("shareMsg").textContent=msg||"สร้างลิงก์แล้ว — กด \"เปิด\" เพื่อทดสอบ หรือคัดลอกไปส่งต่อ";
+  flash($("shareMsg"),msg||"สร้างลิงก์แล้ว — กด \"เปิด\" เพื่อทดสอบ หรือคัดลอกไปส่งต่อ");
   if($("linkOut").setSelectionRange){try{$("linkOut").focus();$("linkOut").setSelectionRange(0,url.length)}catch(e){}}
   copyText(url).then(ok=>{
     if($("linkOut").value!==url)return;
-    $("shareMsg").className="s";
-    $("shareMsg").textContent=ok?"คัดลอกลิงก์ลงคลิปบอร์ดแล้ว":'สร้างลิงก์แล้ว — เบราว์เซอร์นี้ไม่อนุญาตให้คัดลึกอัตโนมัติ กรุณากดลิงก์ในช่องแล้วคัดลอกเอง';
-    if(!ok){try{$("linkOut").focus();$("linkOut").select()}catch(e){}}
+    if(ok)flash($("shareMsg"),"คัดลอกลิงก์ลงคลิปบอร์ดแล้ว","ok");
+    else{flash($("shareMsg"),"สร้างลิงก์แล้ว — เบราว์เซอร์นี้ไม่อนุญาตให้คัดลอกอัตโนมัติ กรุณากดในช่องลิงก์แล้วคัดลอกเอง","err");
+      try{$("linkOut").focus();$("linkOut").select()}catch(e){}}
   });
 }
 $("shareLast").onclick=()=>{
-  if(!lastResult){$("shareMsg").className="s err";$("shareMsg").textContent="ยังไม่มีผลการอ่าน — กด \"จำแนกภาพ\" ก่อน";return}
-  const code=$("rcode").value.trim()||"ไม่ระบุรหัส",date=$("rdate").value||new Date().toISOString().slice(0,10);
-  setLink(baseUrl()+"#r="+b64e({v:1,one:{code,date,cls:lastResult.cls,conf:lastResult.conf}}),"ลิงก์ผลการอ่านล่าสุด");
+  if(!lastResult){flash($("shareMsg"),"ยังไม่มีผลการอ่าน — กด \"จำแนกภาพ\" ก่อน","err");return}
+  const one={
+    label:$("rlabel").value.trim()||"ไม่ระบุ label",
+    farm:$("rfarm").value.trim()||"",
+    cls:$("rresult").value||lastResult.cls,
+    conf:+(Number($("rconf").value)||lastResult.conf*100).toFixed(1),
+    analyst:$("ranalyst").value.trim()||"",
+    date:$("rdate").value||today()
+  };
+  setLink(baseUrl()+"#r="+b64e({v:2,one}),"ลิงก์ผลการอ่านล่าสุด");
 };
 $("shareAll").onclick=()=>{
   const r=loadRecs();
-  if(!r.length){$("shareMsg").className="s err";$("shareMsg").textContent="ยังไม่มีข้อมูลในตารางให้สร้างลิงก์";return}
-  setLink(baseUrl()+"#r="+b64e({v:1,all:r}),`ลิงก์ตาราง ${r.length} รายการ`);
+  if(!r.length){flash($("shareMsg"),"ยังไม่มีข้อมูลในตารางให้สร้างลิงก์","err");return}
+  setLink(baseUrl()+"#r="+b64e({v:2,all:r}),`ลิงก์ตาราง ${r.length} รายการ`);
 };
 $("openLink").onclick=()=>{const u=$("linkOut").value;if(u)location.href=u};
 function readHash(){
@@ -457,22 +725,34 @@ function readHash(){
   let d=null;try{d=b64d(raw)}catch(e){d=null}
   if(!d||!d.v){$("viewCard").classList.remove("hide");$("viewHead").innerHTML='<p class="err">ลิงก์ไม่ถูกต้องหรือข้อมูลเสียหาย</p>';return}
   const rows=d.all||(d.one?[d.one]:[]);
+  // แปลงรูปแบบลิงก์รุ่นเก่า (code / conf เป็น 0-1) ให้แสดงได้เหมือนรุ่นใหม่ (conf เป็น %)
+  const norm=x=>({
+    label:x.label||x.code||"",
+    farm:x.farm||"",
+    cls:x.cls||"",
+    conf:x.conf===null||x.conf===undefined||x.conf===""?"":(x.conf>0&&x.conf<=1&&!x.v2?+(x.conf*100).toFixed(1):Number(x.conf)),
+    analyst:x.analyst||"",
+    date:x.date||""
+  });
+  const list=rows.map(norm);
   $("viewCard").classList.remove("hide");
   $("viewHead").innerHTML=d.one&&!d.all
-    ? `<p class="v" style="color:${COL[d.one.cls]||"#64748b"}">${TH[d.one.cls]||d.one.cls} (${(d.one.conf*100).toFixed(1)}%)</p>
-       <ul class="list"><li><span>หมายเลขรหัสตัวอย่าง</span><b>${esc(d.one.code)}</b></li>
-       <li><span>วันที่บันทึกตัวอย่าง</span><b>${esc(fmtD(d.one.date))}</b></li></ul>`
-    : `<p class="s" style="margin-bottom:8px">ตารางที่แชร์มา ${rows.length} รายการ</p>`;
-  $("viewBody").innerHTML=`<div class="tw"><table><thead><tr><th class="num">ลำดับ</th><th>หมายเลขรหัสตัวอย่าง</th><th>วันที่บันทึกตัวอย่าง</th><th class="num">ผลการจำแนก</th><th class="num">ความเชื่อมั่น</th></tr></thead><tbody>`+
-    rows.map((x,i)=>`<tr><td class="num">${i+1}</td><td>${esc(x.code)}</td><td>${esc(fmtD(x.date))}</td>
-      <td class="num"><span class="badge" style="background:${esc(COL[x.cls]||"#64748b")}">${esc(TH[x.cls]||x.cls)}</span></td>
-      <td class="num">${(x.conf*100).toFixed(1)}%</td></tr>`).join("")+`</tbody></table></div>`;
-  $("shareMsg").className="s";$("shareMsg").textContent="ลิงก์นี้แสดงผลที่ฝังมาเท่านั้น ไม่ได้บันทึกอัตโนมัติ";
+    ? `<p class="v" style="color:${COL[list[0].cls]||"var(--tx)"};margin-top:10px">${TH[list[0].cls]||list[0].cls||"—"} (${pct(list[0].conf)})</p>
+       <ul class="list"><li><span>label ตัวอย่าง</span><b>${esc(list[0].label||"—")}</b></li>
+       <li><span>ฟาร์มที่มาตัวอย่าง</span><b>${esc(list[0].farm||"—")}</b></li>
+       <li><span>ชื่อผู้ตรวจวิเคราะห์</span><b>${esc(list[0].analyst||"—")}</b></li>
+       <li><span>วันที่บันทึกตัวอย่าง</span><b>${esc(fmtD(list[0].date))}</b></li></ul>`
+    : `<p class="s" style="margin-top:10px">ตารางที่แชร์มา ${list.length} รายการ</p>`;
+  $("viewBody").innerHTML=`<div class="tw"><table><thead><tr><th class="num">ลำดับที่</th><th>label ตัวอย่าง</th><th>ฟาร์มที่มาตัวอย่าง</th><th class="num">ค่าผลตรวจที่ได้</th><th class="num">ความเชื่อมั่น</th><th>ชื่อผู้ตรวจวิเคราะห์</th><th>วันที่บันทึก</th></tr></thead><tbody>`+
+    list.map((x,i)=>`<tr><td class="num">${i+1}</td><td>${esc(x.label||"—")}</td><td>${esc(x.farm||"—")}</td>
+      <td class="num">${badge(x.cls)}</td>
+      <td class="num">${pct(x.conf)}</td><td>${esc(x.analyst||"—")}</td><td>${esc(fmtD(x.date))}</td></tr>`).join("")+`</tbody></table></div>`;
+  flash($("shareMsg"),"ลิงก์นี้แสดงผลที่ฝังมาเท่านั้น ไม่ได้บันทึกอัตโนมัติ");
   $("saveToTable").onclick=()=>{
     const cur=loadRecs();
-    const add=rows.filter(x=>!cur.some(y=>y.code===x.code&&y.date===x.date&&y.cls===x.cls));
-    saveRecs(cur.concat(add));renderRecs();
-    $("viewMsg").className="s";$("viewMsg").textContent=add.length?`เพิ่ม ${add.length} รายการลงตารางแล้ว`:"รายการเหล่านี้มีอยู่แล้วในตาราง";
+    const add=list.filter(x=>!cur.some(y=>y.label===x.label&&y.date===x.date&&y.cls===x.cls&&y.conf===x.conf));
+    const stored=saveRecs(cur.concat(add));renderRecs();
+    flash($("viewMsg"),add.length?`เพิ่ม ${add.length} รายการลงตารางแล้ว`:"รายการเหล่านี้มีอยู่แล้วในตาราง",add.length?"ok":"");
   };
 }
 siteLink();readHash();

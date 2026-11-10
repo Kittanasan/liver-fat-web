@@ -1,15 +1,16 @@
 {
-  "name": "จำแนกระดับไขมันในตับ (liverV1)",
-  "short_name": "liverV1",
-  "description": "ประเมินระดับเม็ดไขมันในตับจากภาพด้วยแบบจำลอง liverV1 ในเบราว์เซอร์",
+  "name": "ระบบจำแนกและบันทึกผลการตรวจวิเคราะห์ — ศูนย์วิจัยและพัฒนาการเพาะเลี้ยงสัตว์น้ำชายฝั่งฉะเชิงเทรา",
+  "short_name": "ศวช.ฉะเชิงเทรา",
+  "description": "ระบบจำแนกระดับเม็ดไขมันในตับจากภาพ และบันทึกผลการตรวจวิเคราะห์ (แบบจำลอง liverV1) ประมวลผลในเบราว์เซอร์",
   "lang": "th",
   "dir": "ltr",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#f6f8fb",
-  "theme_color": "#2563eb",
+  "background_color": "#f4f7fc",
+  "theme_color": "#10367a",
+  "categories": ["medical", "productivity", "utilities"],
   "icons": [
     {
       "src": "icon.svg",

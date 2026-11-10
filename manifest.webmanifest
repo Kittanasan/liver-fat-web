@@ -1,0 +1,21 @@
+{
+  "name": "จำแนกระดับไขมันในตับ (liverV1)",
+  "short_name": "liverV1",
+  "description": "ประเมินระดับเม็ดไขมันในตับจากภาพด้วยแบบจำลอง liverV1 ในเบราว์เซอร์",
+  "lang": "th",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f6f8fb",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

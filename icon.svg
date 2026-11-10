@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="liverV1">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#g)"/>
+  <path d="M126 300c0-84 62-146 146-146 60 0 106 34 122 86 10 32-6 62-38 72-34 11-58 18-90 34-46 23-78 12-104-14-24-24-36-56-36-32z"
+        fill="#ffffff" opacity="0.95"/>
+  <circle cx="300" cy="236" r="34" fill="#22c55e"/>
+  <circle cx="236" cy="272" r="22" fill="#f59e0b"/>
+  <circle cx="318" cy="300" r="16" fill="#ef4444"/>
+</svg>

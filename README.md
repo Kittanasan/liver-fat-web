@@ -3,8 +3,9 @@
 เว็บ static ที่รันแบบจำลอง YOLO `liverV1` **ในเบราว์เซอร์ของผู้ใช้** (ONNX Runtime Web)
 ไม่มีเซิร์ฟเวอร์ ไม่มีค่าใช้จ่าย ภาพไม่ถูกส่งออกจากเครื่องผู้ใช้
 
-- เว็บออนไลน์: https://liver-fat-eval.github.io/liver-fat-web/
-- โค้ด: https://github.com/liver-fat-eval/liver-fat-web (branch `main`, public)
+- เว็บออนไลน์: https://kittanasan.github.io/liver-fat-web/
+- โค้ด: https://github.com/Kittanasan/liver-fat-web (branch `main`, public)
+- repo เดิม (ต้องได้สิทธิ์ collaborator ก่อนจึง push ได้): https://github.com/liver-fat-eval/liver-fat-web
 - โฮสต์: GitHub Pages (เสิร์ฟจาก root ของ `main`)
 
 ## ไฟล์ในโปรเจกต์
@@ -14,6 +15,11 @@
 | `index.html` | หน้าเว็บทั้งหมด (HTML + CSS + JS ในไฟล์เดียว) |
 | `liverV1.onnx` | แบบจำลองที่แปลงจาก `liverV1.pt` (12 MB, อินพุต 640×640) |
 | `sample.jpg` | ภาพตัวอย่างสำหรับปุ่ม "ลองใช้ภาพตัวอย่าง" |
+| `manifest.webmanifest`, `icon.svg` | ทำให้ติดตั้งเป็นแอป (PWA) ได้บน Windows / macOS / Linux / Android / iOS |
+| `serve.py` | เซิร์ฟเวอร์ทดสอบ/แชร์ในวง LAN ใช้ได้ทุก OS (Python 3.8+ มาตรฐาน ไม่ต้องติดตั้งเพิ่ม) |
+| `share-server.bat` | ตัวเปิดเซิร์ฟเวอร์บน Windows (สำหรับดับเบิลคลิก) |
+| `start-mac.command` | ตัวเปิดเซิร์ฟเวอร์บน macOS (ดับเบิลคลิกใน Finder) |
+| `start-linux.sh` | ตัวเปิดเซิร์ฟเวอร์บน Linux |
 | `.nojekyll` | บอก GitHub Pages ให้เสิร์ฟไฟล์ตรง ๆ |
 | `.gitattributes` | บังคับ line ending เป็น LF และถือ `.onnx`/`.jpg` เป็น binary |
 
@@ -33,29 +39,51 @@
 ภาพตัวอย่างให้ผล **Low 60.7% พบ 6 จุด** ทั้งในเครื่องและบนเว็บจริง
 (ฝั่ง Python/ultralytics ได้ 59.3% ต่างกันเล็กน้อยจากการย่อภาพ)
 
+## ใช้ได้กับทุกแพลตฟอร์ม
+
+หน้าเว็บเป็น static HTML ไฟล์เดียว จึงทำงานเหมือนกันบนเบราว์เซอร์ทุกตัว (Chrome, Edge, Firefox, Safari, Samsung Internet)
+ทั้งบน Windows, macOS, Linux, Android, iPhone/iPad, iPadOS และ ChromeOS โดยเฉพาะ:
+
+- เลือกแบบจำลอง: ลอง WebGPU ก่อน ถ้าเบราว์เซอร์ไม่รองรับจะถอยไปใช้ WASM อัตโนมัติ
+- เปิดแบบไฟล์ (ดับเบิลคลิก `index.html` = `file://`) ได้ด้วย: ถ้าโหลด `.onnx` ไม่ได้ จะมีปุ่ม "เลือกไฟล์ liverV1.onnx ในเครื่อง"
+  (FileReader) ให้เลือกไฟล์เอง — ยังต้องมีอินเทอร์เน็ตเพื่อโหลด `onnxruntime-web` จาก CDN
+- คัดลอกลิงก์: ถ้าเบราว์เซอร์ไม่ให้ใช้ Clipboard API (เช่น http ที่ไม่ใช่ localhost) จะใช้ `execCommand("copy")` แทน
+- localStorage: ถ้าถูกบล็อก (โหมดส่วนตัว Safari) จะเก็บไว้ในหน่วยความจำและแจ้งผู้ใช้ว่าข้อมูลจะหายเมื่อปิดแท็บ
+- ช่องวันที่ใช้ `<input type="date">` ที่มี date picker ของระบบ (works ทุก OS) และกันการเลือกวันอนาคต
+- ติดตั้งเป็นแอป: กดปุ่ม "ติดตั้งเป็นแอป" ในแถบด้านบน (Chrome/Edge บนเดสก์ท็อปและ Android)
+  บน iPhone/iPad ใช้ Safari > แชร์ > เพิ่มไปยังหน้าจอโฮม
+
 ## ทดสอบในเครื่อง
 
 ```bat
 py -3 -m http.server 8765
 ```
 
-เปิด `http://localhost:8765/` (ต้องเปิดผ่านเซิร์ฟเวอร์ ห้ามดับเบิลคลิกไฟล์ เพราะ `file://` โหลด `.onnx` ไม่ได้)
+หรือใช้ตัวช่วยที่รองรับทุก OS:
+
+| ระบบ | คำสั่ง |
+|---|---|
+| Windows | `py -3 serve.py` หรือดับเบิลคลิก `share-server.bat` |
+| macOS | `python3 serve.py` หรือดับเบิลคลิก `start-mac.command` |
+| Linux | `./start-linux.sh` หรือ `python3 serve.py` |
+
+เปิด `http://localhost:8080/` (ต้องเปิดผ่านเซิร์ฟเวอร์ ห้ามดับเบิลคลิกไฟล์ เพราะ `file://` โหลด `.onnx` ไม่ได้
+— ยกเว้นจะกดปุ่ม "เลือกไฟล์ liverV1.onnx ในเครื่อง")
 
 ## แชร์ให้เครื่องอื่นเปิด (LAN)
 
-```bat
-share-server.bat
+```bash
+python3 serve.py        # หรือ  share-server.bat / start-mac.command / ./start-linux.sh
 ```
 
-หรือ `py -3 serve.py` (เลือกพอร์ตได้ เช่น `py -3 serve.py 8080`)
 หน้าต่างจะพิมพ์ลิงก์ 2 แบบ:
 
 - เครื่องนี้: `http://127.0.0.1:8080/`
 - เครื่องอื่นในวงเดียวกัน: `http://<IP ของเครื่องนี้>:8080/` เช่น `http://192.168.0.124:8080/`
 
-เงื่อนไข: เครื่องอื่นต้องอยู่ Wi-Fi/LAN เดียวกัน และ Windows Firewall ต้องอนุญาต Python
-(ไฟล์ `.bat` เปิด firewall rule ให้พอร์ต 8080 แบบ private ให้แล้ว)
-เติม `#auto` ท้าย URL เพื่อให้รันภาพตัวอย่างอัตโนมัติ และผลจะแสดงที่ชื่อแท็บ (`RESULT {...}`)
+เงื่อนไข: อุปกรณ์อื่นต้องอยู่ Wi-Fi/LAN เดียวกัน และไฟร์วอลล์ต้องอนุญาตพอร์ตนี้
+(Windows เลือก Private network, macOS อนุญาต Python ใน Firewall, Linux `sudo ufw allow 8080/tcp`)
+เติ่ม `#auto` ท้าย URL เพื่อให้รันภาพตัวอย่างอัตโนมัติ และผลจะแสดงที่ชื่อแท็บ (`RESULT {...}`)
 
 ## แก้ไขและอัปเดตเว็บ
 
@@ -80,7 +108,7 @@ YOLO("liverV1.pt").export(format="onnx", imgsz=640, opset=12, simplify=False, dy
 
 - repo เป็น public เพราะ GitHub Pages ฟรีใช้ได้เฉพาะ public และแบบจำลองต้องถูกส่งให้เบราว์เซอร์อยู่แล้ว ทุกคนจึงดาวน์โหลด `liverV1.onnx` ได้
 - ครั้งแรกที่เปิดต้องโหลดแบบจำลอง 12 MB และไลบรารีจาก CDN ต้องมีอินเทอร์เน็ต
-- ไม่มีฐานข้อมูล ไม่เก็บประวัติผลตรวจ แค่จำแนกภาพ
+- ไม่มีฐานข้อมูล ไม่เก็บประวัติผลตรวจบนเซิร์ฟเวอร์ ผลที่บันทึกเก็บใน localStorage ของเบราว์เซอร์แต่ละเครื่อง
 - เป็นเครื่องมือช่วยประเมินเบื้องต้นเท่านั้น
 
 ## ประวัติการเลือกวิธี (กันทำซ้ำ)

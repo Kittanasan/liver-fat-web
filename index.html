@@ -18,7 +18,44 @@ canvas{max-width:100%;height:auto;border-radius:10px;display:block;margin:12px a
 .v{font-size:1.5rem;font-weight:700;margin:0}.bar{height:10px;background:var(--bd);border-radius:6px;overflow:hidden;margin:4px 0 10px}
 .bar i{display:block;height:100%}.row{display:flex;justify-content:space-between;font-size:.9rem}
 .err{color:#dc2626}.hide{display:none}
+.sec{font-size:1.05rem;font-weight:700;margin:0 0 12px}
+label{display:block;font-size:.9rem;color:var(--mut);margin:0 0 6px}
+input[type=text],input[type=date]{width:100%;padding:11px 12px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font-size:1rem;font-family:inherit;min-height:44px}
+input[type=text]:focus,input[type=date]:focus{outline:2px solid var(--ac);outline-offset:1px}
+.grid2{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:600px){.grid2{grid-template-columns:1fr 1fr}}
+.rowbtn{display:grid;grid-template-columns:1fr;gap:8px;margin-top:14px}
+@media(min-width:600px){.rowbtn{grid-template-columns:1fr 1fr}}
+.rowbtn button{margin-top:0}
+.ghost{background:transparent;color:var(--tx);border:1px solid var(--bd)}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--bd);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:620px}
+th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--bd);white-space:nowrap}
+th{background:var(--bg);color:var(--mut);font-weight:600;font-size:.82rem;position:sticky;top:0}
+tbody tr:last-child td{border-bottom:0}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.8rem;font-weight:600;color:#fff}
+.empty{padding:22px 12px;text-align:center;color:var(--mut);font-size:.92rem}
+.tbl-del{background:transparent;border:0;color:#dc2626;cursor:pointer;padding:6px 8px;font-size:1rem;width:auto;min-height:auto}
+.note{font-size:.82rem;color:var(--mut);margin:10px 0 0}
+a{color:var(--ac)}
+.topbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px;font-size:.88rem}
+.topbar a{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--bd);border-radius:999px;background:var(--card);text-decoration:none}
+.topbar a:hover{border-color:var(--ac)}
+.share{background:transparent;color:var(--ac);border:1px solid var(--bd);width:auto;margin-top:0;padding:10px 16px}
+.share:hover{border-color:var(--ac)}
+.inp{display:flex;gap:8px;margin-top:8px}
+.inp input{flex:1;min-width:0}
+.inp button{width:auto;margin-top:0;padding:11px 16px;white-space:nowrap}
+.list{list-style:none;padding:0;margin:8px 0 0;font-size:.9rem}
+.list li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}
+.list li:last-child{border-bottom:0}
+.shareOut{margin-top:10px}
 </style></head><body><main>
+<nav class="topbar">
+  <a id="siteLink" href="./">หน้าเว็บหลัก</a>
+  <a id="ghLink" href="#" target="_blank" rel="noopener">GitHub</a>
+</nav>
 <h1>จำแนกระดับเม็ดไขมันในตับ</h1>
 <p class="s">อัปโหลดภาพเนื้อตับ ระบบประเมินด้วยแบบจำลอง liverV1 <b>ในเบราว์เซอร์ของคุณเอง</b> ภาพไม่ถูกส่งไปที่ไหน</p>
 <div class="card">
@@ -27,12 +64,75 @@ canvas{max-width:100%;height:auto;border-radius:10px;display:block;margin:12px a
   <button id="go" disabled>จำแนกภาพ</button>
   <button id="demo" class="alt">ลองใช้ภาพตัวอย่าง</button>
   <p id="msg" class="s" style="margin-top:10px">กำลังโหลดแบบจำลอง…</p>
+  <p class="s" style="margin-top:8px;font-size:.82rem">ผลการอ่านจะแสดงในตารางด้านล่างเมื่อกด "บันทึกข้อมูล"</p>
 </div>
 <div id="res" class="card hide">
   <p class="v" id="verdict"></p><p class="s" id="advice"></p>
   <div id="bars"></div>
   <canvas id="cv"></canvas>
-</div></main>
+</div>
+<div class="card">
+  <p class="sec">บันทึกผลการอ่าน</p>
+  <div class="grid2">
+    <div>
+      <label for="rcode">หมายเลขรหัสตัวอย่าง</label>
+      <input id="rcode" type="text" inputmode="text" placeholder="เช่น LV-0001" autocomplete="off">
+    </div>
+    <div>
+      <label for="rdate">วันที่บันทึกตัวอย่าง</label>
+      <input id="rdate" type="date">
+    </div>
+  </div>
+  <div class="rowbtn">
+    <button id="save">บันทึกข้อมูล</button>
+    <button id="clear" class="ghost">ล้างรายการทั้งหมด</button>
+  </div>
+  <p id="saveMsg" class="s" style="margin-top:10px">&nbsp;</p>
+</div>
+<div class="card">
+  <p class="sec">แชร์ลิงก์ผลการอ่าน</p>
+  <p class="s" style="margin:0">สร้างลิงก์ที่ฝังผลการอ่านไว้ในตัว URL เพื่อส่งต่อหรือเปิดในเครื่องอื่นได้ ไม่ต้องมีเซิร์ฟเวอร์</p>
+  <div class="rowbtn">
+    <button id="shareLast" class="share">คัดลอกลิงก์ผลล่าสุด</button>
+    <button id="shareAll" class="share">คัดลอกลิงก์ทั้งตาราง</button>
+  </div>
+  <div class="shareOut">
+    <label for="linkOut">ลิงก์ที่สร้างได้</label>
+    <div class="inp">
+      <input id="linkOut" type="text" readonly placeholder="ยังไม่มีลิงก์ — กดปุ่มด้านบน">
+      <button id="openLink" class="share" disabled>เปิด</button>
+    </div>
+    <p id="shareMsg" class="s" style="margin-top:8px">&nbsp;</p>
+  </div>
+</div>
+<div class="card">
+  <p class="sec">ผลการอ่านที่บันทึกไว้</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th class="num">ลำดับ</th>
+          <th>หมายเลขรหัสตัวอย่าง</th>
+          <th>วันที่บันทึกตัวอย่าง</th>
+          <th class="num">ผลการจำแนก</th>
+          <th class="num">ความเชื่อมั่น</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div id="tempty" class="empty">ยังไม่มีข้อมูล — จำแนกภาพแล้วกด "บันทึกข้อมูล"</div>
+  </div>
+</div>
+<div id="viewCard" class="card hide">
+  <p class="sec">ผลการอ่านจากลิงก์ที่แชร์</p>
+  <div id="viewHead"></div>
+  <div id="viewBody"></div>
+  <button id="saveToTable" class="share">บันทึกลงตารางของเครื่องนี้</button>
+  <p id="viewMsg" class="s" style="margin-top:8px">&nbsp;</p>
+</div>
+<p class="note">ข้อมูลบันทึกอยู่ในเบราว์เซอร์เครื่องนี้ (localStorage) ไม่ได้ถูกส่งไปที่ใด ใช้เป็นบันทึกตัวอย่างเบื้องต้นเท่านั้น</p>
+</main>
 <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.18.0/dist/ort.min.js"></script>
 <script>
 const $=id=>document.getElementById(id);
@@ -40,7 +140,7 @@ const NAMES=["Hight","Low","Medium"];                 // ลำดับคล�
 const COL={Hight:"#ef4444",Medium:"#f59e0b",Low:"#22c55e"},TH={Hight:"สูง",Medium:"ปานกลาง",Low:"ต่ำ"};
 const ADV={Hight:"ตรวจพบเม็ดไขมันมาก",Medium:"ตรวจพบเม็ดไขมันปานกลาง",Low:"ตรวจพบเม็ดไขมันน้อย"};
 const SZ=640,CONF=0.25,IOU=0.7;
-let session=null,img=null;
+let session=null,img=null,lastResult=null;
 
 async function loadModel(){
   try{
@@ -51,6 +151,8 @@ async function loadModel(){
   }catch(e){$("msg").className="s err";$("msg").textContent="โหลดแบบจำลองไม่สำเร็จ: "+e.message}
 }
 function setImg(src){
+  lastResult=null;$("res").classList.add("hide");document.title="จำแนกระดับไขมันในตับ";
+  if(!$("rdate").value)$("rdate").value=new Date().toISOString().slice(0,10);
   const i=new Image();i.onload=()=>{img=i;$("go").disabled=!session;$("msg").textContent=session?"พร้อมจำแนก กดปุ่ม \"จำแนกภาพ\"":"กำลังโหลดแบบจำลอง…";
     if(location.hash==="#auto"&&session)run()};
   i.src=src;
@@ -107,8 +209,104 @@ function show(dets,w,h){
   $("bars").innerHTML=["Hight","Medium","Low"].map(k=>{const p=Math.round(sc[k]*100);
     return `<div class="row"><span>${TH[k]} · พบ ${cn[k]} จุด</span><span>${p}%</span></div><div class="bar"><i style="width:${p}%;background:${COL[k]}"></i></div>`}).join("");
   $("res").classList.remove("hide");$("msg").textContent="เสร็จแล้ว";
+  lastResult=dets.length?{cls:NAMES[dets[0].cls],conf:dets[0].conf}:null;
   document.title="RESULT "+JSON.stringify({n:dets.length,cn,top:dets[0]&&[NAMES[dets[0].cls],+dets[0].conf.toFixed(3)]});
 }
+/* ---- บันทึกผลการอ่าน ---- */
+const LSKEY="liverV1_records";
+function loadRecs(){try{return JSON.parse(localStorage.getItem(LSKEY))||[]}catch(e){return[]}}
+function saveRecs(r){localStorage.setItem(LSKEY,JSON.stringify(r))}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function fmtD(d){if(!d)return"—";const p=d.split("-");return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:d}
+function renderRecs(){
+  const r=loadRecs(),tb=$("tbody");
+  $("rdate").max=new Date().toISOString().slice(0,10);
+  if(!$("rdate").value)$("rdate").value=new Date().toISOString().slice(0,10);
+  tb.innerHTML=r.map((x,i)=>
+    `<tr>
+      <td class="num">${i+1}</td>
+      <td>${esc(x.code)}</td>
+      <td>${esc(fmtD(x.date))}</td>
+      <td class="num"><span class="badge" style="background:${esc(COL[x.cls]||"#64748b")}">${esc(TH[x.cls]||x.cls)}</span></td>
+      <td class="num">${(x.conf*100).toFixed(1)}%</td>
+      <td><button class="tbl-del" data-i="${i}" title="ลบรายการนี้">&times;</button></td>
+    </tr>`).join("");
+  $("tempty").style.display=r.length?"none":"block";
+  tb.querySelectorAll(".tbl-del").forEach(b=>b.onclick=()=>{const r2=loadRecs();r2.splice(+b.dataset.i,1);saveRecs(r2);renderRecs()});
+}
+$("rcode").oninput=()=>{if($("saveMsg").className==="s err"){$("saveMsg").className="s";$("saveMsg").textContent="\u00a0"}};
+$("save").onclick=()=>{
+  if(!lastResult){$("saveMsg").className="s err";$("saveMsg").textContent="ยังไม่มีผลการอ่าน — กด \"จำแนกภาพ\" ก่อน";return}
+  const code=$("rcode").value.trim(),date=$("rdate").value;
+  if(!code){$("saveMsg").className="s err";$("saveMsg").textContent="กรุณากรอกหมายเลขรหัสตัวอย่าง";$("rcode").focus();return}
+  if(!date){$("saveMsg").className="s err";$("saveMsg").textContent="กรุณาเลือกวันที่บันทึกตัวอย่าง";$("rdate").focus();return}
+  const r=loadRecs();r.push({code,date,cls:lastResult.cls,conf:lastResult.conf});
+  saveRecs(r);renderRecs();$("rcode").value="";
+  $("saveMsg").className="s";$("saveMsg").textContent=`บันทึกแล้ว: ${code} · ${fmtD(date)} · ${TH[lastResult.cls]} ${(lastResult.conf*100).toFixed(1)}%`;
+};
+$("clear").onclick=()=>{
+  if(!loadRecs().length){$("saveMsg").className="s";$("saveMsg").textContent="ไม่มีข้อมูลให้ล้าง";return}
+  if(confirm("ล้างรายการผลการอ่านทั้งหมด?")){saveRecs([]);renderRecs();$("saveMsg").className="s";$("saveMsg").textContent="ล้างรายการทั้งหมดแล้ว"}
+};
+renderRecs();
+/* ---- ลิงก์: สร้าง/อ่านผลการอ่านจาก URL ---- */
+const b64e=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+const b64d=s=>JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,"+").replace(/_/g,"/")))));
+function baseUrl(){return location.origin+location.pathname}
+function siteLink(){
+  const a=$("siteLink");
+  a.href=baseUrl();
+  a.textContent="หน้าเว็บหลัก";
+  const gh=document.querySelector('meta[name="repo"]');
+  if(gh&&gh.content){$("ghLink").href=gh.content}
+  else{$("ghLink").style.display="none"}
+}
+function setLink(url,msg){
+  $("linkOut").value=url;$("openLink").disabled=!url;
+  $("shareMsg").className="s";$("shareMsg").textContent=msg||"สร้างลิงก์แล้ว — กด \"เปิด\" เพื่อทดสอบ หรือคัดลอกไปส่งต่อ";
+  const t=$("linkOut");t.focus();t.select();
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(
+    ()=>{$("shareMsg").textContent="คัดลอกลิงก์ลงคลิปบอร์ดแล้ว"},()=>{})}
+}
+$("shareLast").onclick=()=>{
+  if(!lastResult){$("shareMsg").className="s err";$("shareMsg").textContent="ยังไม่มีผลการอ่าน — กด \"จำแนกภาพ\" ก่อน";return}
+  const code=$("rcode").value.trim()||"ไม่ระบุรหัส",date=$("rdate").value||new Date().toISOString().slice(0,10);
+  setLink(baseUrl()+"#r="+b64e({v:1,one:{code,date,cls:lastResult.cls,conf:lastResult.conf}}),"ลิงก์ผลการอ่านล่าสุด");
+};
+$("shareAll").onclick=()=>{
+  const r=loadRecs();
+  if(!r.length){$("shareMsg").className="s err";$("shareMsg").textContent="ยังไม่มีข้อมูลในตารางให้สร้างลิงก์";return}
+  setLink(baseUrl()+"#r="+b64e({v:1,all:r}),`ลิงก์ตาราง ${r.length} รายการ`);
+};
+$("openLink").onclick=()=>{const u=$("linkOut").value;if(u)location.href=u};
+function readHash(){
+  const h=location.hash.replace(/^#/,"");
+  if(!h||h==="auto")return;
+  const p=new URLSearchParams(h);
+  const raw=p.get("r")||(h.startsWith("r=")?h.slice(2):"");
+  if(!raw)return;
+  let d=null;try{d=b64d(raw)}catch(e){d=null}
+  if(!d||!d.v){$("viewCard").classList.remove("hide");$("viewHead").innerHTML='<p class="err">ลิงก์ไม่ถูกต้องหรือข้อมูลเสียหาย</p>';return}
+  const rows=d.all||(d.one?[d.one]:[]);
+  $("viewCard").classList.remove("hide");
+  $("viewHead").innerHTML=d.one&&!d.all
+    ? `<p class="v" style="color:${COL[d.one.cls]||"#64748b"}">${TH[d.one.cls]||d.one.cls} (${(d.one.conf*100).toFixed(1)}%)</p>
+       <ul class="list"><li><span>หมายเลขรหัสตัวอย่าง</span><b>${esc(d.one.code)}</b></li>
+       <li><span>วันที่บันทึกตัวอย่าง</span><b>${esc(fmtD(d.one.date))}</b></li></ul>`
+    : `<p class="s" style="margin-bottom:8px">ตารางที่แชร์มา ${rows.length} รายการ</p>`;
+  $("viewBody").innerHTML=`<div class="tw"><table><thead><tr><th class="num">ลำดับ</th><th>หมายเลขรหัสตัวอย่าง</th><th>วันที่บันทึกตัวอย่าง</th><th class="num">ผลการจำแนก</th><th class="num">ความเชื่อมั่น</th></tr></thead><tbody>`+
+    rows.map((x,i)=>`<tr><td class="num">${i+1}</td><td>${esc(x.code)}</td><td>${esc(fmtD(x.date))}</td>
+      <td class="num"><span class="badge" style="background:${esc(COL[x.cls]||"#64748b")}">${esc(TH[x.cls]||x.cls)}</span></td>
+      <td class="num">${(x.conf*100).toFixed(1)}%</td></tr>`).join("")+`</tbody></table></div>`;
+  $("shareMsg").className="s";$("shareMsg").textContent="ลิงก์นี้แสดงผลที่ฝังมาเท่านั้น ไม่ได้บันทึกอัตโนมัติ";
+  $("saveToTable").onclick=()=>{
+    const cur=loadRecs();
+    const add=rows.filter(x=>!cur.some(y=>y.code===x.code&&y.date===x.date&&y.cls===x.cls));
+    saveRecs(cur.concat(add));renderRecs();
+    $("viewMsg").className="s";$("viewMsg").textContent=add.length?`เพิ่ม ${add.length} รายการลงตารางแล้ว`:"รายการเหล่านี้มีอยู่แล้วในตาราง";
+  };
+}
+siteLink();readHash();
 loadModel();
 if(location.hash==="#auto")setImg("sample.jpg");
 </script></body></html>
